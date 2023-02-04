@@ -20,16 +20,17 @@ void display(void)
 {
   glClear(GL_COLOR_BUFFER_BIT) ;
   glPushMatrix() ;
-  glRotatef(spin, 0.0, 0.0, 1.0) ;
-  glColor3f(1.0, 0.0, 1.0) ;
-  glutSolidCube(400);
+  glTranslatef(0, 0, -20);
+  glRotatef(spin, 1.0, 0.5, 0.5) ;
+  glColor3f(0.0, 0.0, 0.0) ;
+  glutWireCube(15.0);
   glPopMatrix() ;
   glutSwapBuffers() ;
 }
 
 void spinDisplay(void)
 {
-  spin = spin + 2.0 ;
+  spin = spin + 1.0 ;
   if (spin > 360.0)
     spin = spin - 360.0 ;
   glutPostRedisplay() ;
@@ -37,10 +38,13 @@ void spinDisplay(void)
 
 void reshape(int w, int h)
 {
+  float aspectRatio = (float)w / (float)h;
   glViewport(0,0,(GLsizei) w,(GLsizei) h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(-500,500,-500,500,-500,500);
+  // glOrtho(-50.0,50.0,-50.0,50.0,-50.0,50.0);
+  glFrustum (-10.0, 10.0, -10.0, 10.0, 5, 50);
+  
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
