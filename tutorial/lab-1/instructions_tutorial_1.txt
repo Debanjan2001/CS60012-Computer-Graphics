@@ -1,0 +1,55 @@
+Task-I
+------
+
+In the first tutorial, we will start with installing OpenGL and testing our first "hello world" OpenGL program. 
+
+If you are using Ubuntu, you may follow these steps to install OpenGL in your system (assuming that gcc/g++ is already installed in your system):
+
+>> sudo apt-get update
+>> sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
+
+Also update the Mesa GL utilities package:
+
+>> sudo apt install mesa-utils
+
+Then check the installed version:
+
+>> glxinfo | grep "OpenGL version"
+
+Now, you are given a sample hello world code 'testOpenGLSetup.c'. Compile the code using the following command (actually the last argument '-lm' is not always needed for compilation & will be needed for compiling math libraries only):
+
+>> gcc testOpenGLSetup.c -o testOpenGLSetup -lglut -lGLU -lGL -lm
+
+Then you can simply execute the code by performing ./testOpenGLSetup
+
+This will pop up an window with a teapot (the famous OpenGL teapot) image.
+
+If you are using other systems than Ubuntu, you may find some useful instructions in this link for opengl setup:
+
+https://www3.ntu.edu.sg/home/ehchua/programming/opengl/HowTo_OpenGL_C.html
+
+------------------------------
+
+
+Task-II
+-------
+
+Next we start with dealing with basic shapes. The next task is drawing a simple rectangle: The purpose is to draw a rectangle filled with an uniform colour on unform background. Draw a green rectangle in the middle of the window on black background using basic OpenGL functions. Use the following coordinates of the vertices: (0.25, 0.25), (0.75, 0.25), (0.75, 0.75), (0.25, 0.75). 
+
+Some useful tips: 
+- draw the rectangle in the display() callback function; Clear the colour using glClear(GL_COLOR_BUFFER_BIT) at the beginning; use glFlush() at the end of the function. You can use GL_POLYGON mode for drawing the rectangle.
+- If you haven't used any projection transformation (& still can see the rectangle), now use the matrix mode GL_PROJECTION and use orthographic projection using glOrtho(). Can you see any difference between from the previous view?
+- Experiment with gluOrtho2D() and glFrustum() functions. What difference can you see?
+
+
+------------------------------
+
+
+Further reading: You are encouraged to study some sample OpenGL code examples provided here: https://cs.lmu.edu/~ray/notes/openglexamples/
+
+
+
+
+
+
+
