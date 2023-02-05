@@ -28,11 +28,58 @@ int main(int argc, char **argv){
 
 // static GLfloat spin = 0.0 ;
 
-static GLfloat xTranslate = 0.0, yTranslate=30.0;
-static float horizontalVelocity = 0.05;
+
+// Center of the cicle = (320, 240)
+int xc = 0, yc = 0;
+
+// Plot eight points using circle's symmetrical property
+void plot_point(int x, int y)
+{
+  glBegin(GL_POINTS);
+  glVertex2i(xc+x, yc+y);
+  glVertex2i(xc+x, yc-y);
+  glVertex2i(xc+y, yc+x);
+  glVertex2i(xc+y, yc-x);
+  glVertex2i(xc-x, yc-y);
+  glVertex2i(xc-y, yc-x);
+  glVertex2i(xc-x, yc+y);
+  glVertex2i(xc-y, yc+x);
+  glEnd();
+}
+
+
+// Function to draw a circle using bresenham's
+// circle drawing algorithm
+void bresenham_circle(int r)
+{
+  int x=0,y=r;
+  float pk=(5.0/4.0)-r;
+
+  /* Plot the points */
+  /* Plot the first point */
+  plot_point(x,y);
+  int k;
+  /* Find all vertices till x=y */
+  while(x < y)
+  {
+    x = x + 1;
+    if(pk < 0)
+      pk = pk + 2*x+1;
+    else
+    {
+      y = y - 1;
+      pk = pk + 2*(x - y) + 1;
+    }
+    plot_point(x,y);
+  }
+  glFlush();
+}
+
+static GLfloat xTranslate = 0.0, yTranslate=300.0;
+static float horizontalVelocity = 1;
 static float velocity = 0.0;
-static float accelaration = 0.005;
-const float loss = 0.05;
+static float accelaration = 0.05;
+const float loss = 0.8;
 static int upwardMotion = 0;
 
 GLfloat getMax(GLfloat a, GLfloat b){
@@ -62,11 +109,12 @@ void display(void)
   // Draw sample Axes for better visualization
   glColor3f(0.0, 0.0, 0.0) ;
   glBegin(GL_LINES);
-    glVertex2f(0, 0);
-    glVertex2f(40, 0);
-    glVertex2f(0, 0);
-    glVertex2f(0, 40);
+    glVertex2f(-5, -5);
+    glVertex2f(160, -5);
+    glVertex2f(-5, -5);
+    glVertex2f(-5, 80);
   glEnd();
+
 
   glPushMatrix() ;
 
@@ -75,7 +123,8 @@ void display(void)
   glTranslatef(xTranslate, yTranslate, -40.0);
 
   glColor3f(0.0, 0.0, 0.0) ;
-  glutWireSphere(10, 20, 20);
+  // glutWireSphere(5, 20, 20);
+  bresenham_circle(30);
 
   glPopMatrix() ;
   glutSwapBuffers();
@@ -108,6 +157,7 @@ void translateDisplay(void)
     }
   }
 
+  horizontalVelocity = getMaxf(0.0,horizontalVelocity - 0.0004*loss);
   // printf("v=%f, a=%f\n", velocity, accelaration);
   glutPostRedisplay() ;
 }
@@ -120,7 +170,7 @@ void reshape(int w, int h)
   glLoadIdentity();
 
   // Get a Flat view
-  glOrtho(-10.0, 100.0, -10.0, 100.0, -50.0, 50.0);
+  glOrtho(-100.0, 800.0, -100.0, 500.0, -50.0, 50.0);
 
   // Get a 3d View
   // glFrustum (-10.0, 50.0, -10.0, 50.0, 10, 100);
@@ -136,7 +186,7 @@ void mouse(int button, int state, int x, int y)
       if (state == GLUT_DOWN)
         glutIdleFunc(translateDisplay) ;
       break ;
-    case GLUT_MIDDLE_BUTTON:
+    case GLUT_RIGHT_BUTTON:
       if (state == GLUT_DOWN)
         glutIdleFunc(NULL) ;
       break ;
@@ -149,12 +199,13 @@ int main(int argc, char** argv)
 {
   glutInit(&argc, argv) ;
   glutInitDisplayMode(GLUT_DOUBLE) ;
-  glutInitWindowSize(800,800) ;
+  glutInitWindowSize(900, 600);
   glutInitWindowPosition(100,100) ;
-  glutCreateWindow("Spinning Square") ;
+  glutCreateWindow("Trajectory of a bouncing ball") ;
   init() ;
   glutDisplayFunc(display) ;
   glutReshapeFunc(reshape) ;
   glutMouseFunc(mouse) ;
   glutMainLoop() ;
 }
+
