@@ -36,14 +36,14 @@ int xc = 0, yc = 0;
 void plot_point(int x, int y)
 {
   glBegin(GL_POINTS);
-  glVertex2i(xc+x, yc+y);
-  glVertex2i(xc+x, yc-y);
-  glVertex2i(xc+y, yc+x);
-  glVertex2i(xc+y, yc-x);
-  glVertex2i(xc-x, yc-y);
-  glVertex2i(xc-y, yc-x);
-  glVertex2i(xc-x, yc+y);
-  glVertex2i(xc-y, yc+x);
+    glVertex2i(xc+x, yc+y);
+    glVertex2i(xc+x, yc-y);
+    glVertex2i(xc+y, yc+x);
+    glVertex2i(xc+y, yc-x);
+    glVertex2i(xc-x, yc-y);
+    glVertex2i(xc-y, yc-x);
+    glVertex2i(xc-x, yc+y);
+    glVertex2i(xc-y, yc+x);
   glEnd();
 }
 
@@ -81,6 +81,8 @@ static float velocity = 0.0;
 static float accelaration = 0.05;
 const float loss = 0.8;
 static int upwardMotion = 0;
+static int hitGround = 0;
+static float EPS = 1e-6;
 
 GLfloat getMax(GLfloat a, GLfloat b){
   if(a>b){
@@ -100,6 +102,31 @@ void init(void)
 {
   glClearColor(1.0, 1.0, 1.0, 0.0);
   glShadeModel(GL_FLAT);
+}
+
+
+void DrawEllipse(float cx, float cy, float rx, float ry, int num_segments) 
+{ 
+    float theta = 2 * 3.1415926 / (float)(num_segments); 
+    float c = cosf(theta);//precalculate the sine and cosine
+    float s = sinf(theta);
+    float t;
+
+    float x = 1;//we start at angle = 0 
+    float y = 0; 
+
+    glBegin(GL_LINE_LOOP); 
+    for(int ii = 0; ii < num_segments; ii++) 
+    { 
+        //apply radius and offset
+        glVertex2f(x * rx + cx, y * ry + cy);//output vertex 
+
+        //apply the rotation matrix
+        t = x;
+        x = c * x - s * y;
+        y = s * t + c * y;
+    } 
+    glEnd(); 
 }
 
 void display(void)
@@ -123,24 +150,33 @@ void display(void)
   glTranslatef(xTranslate, yTranslate, -40.0);
 
   glColor3f(0.0, 0.0, 0.0) ;
-  // glutWireSphere(5, 20, 20);
-  bresenham_circle(30);
+  
+  // glutWireSphere(25, 20, 20);
+  
+  if(yTranslate > 0 && yTranslate < 10000*EPS){
+    // printf("yes\n");
+    // bresenham_circle(15);
+    DrawEllipse(xc, yc, 40, 20, 10);
+  }else{
+    bresenham_circle(30);
+  }
+
+  // bresenham_circle(30);
 
   glPopMatrix() ;
   glutSwapBuffers();
 }
 
-// void spinDisplay(void)
-// {
-//   spin = spin + 1.0 ;
-//   if (spin > 360.0)
-//     spin = spin - 360.0 ;
-//   glutPostRedisplay() ;
-// }
-
 void translateDisplay(void)
 {
+  
+  // if(velocity < EPS && horizontalVelocity < EPS){
+  //   return;
+  // }
+
   xTranslate = xTranslate + horizontalVelocity ;
+
+  hitGround = 0;
 
   if(upwardMotion){
     velocity -= accelaration;
@@ -155,12 +191,18 @@ void translateDisplay(void)
       upwardMotion = 1;
       velocity = getMaxf(velocity-loss, 0.0);
     }
+
+    // if(abs(yTranslate) <= EPS){
+    //   hitGround = 1;
+    // }
   }
 
-  horizontalVelocity = getMaxf(0.0,horizontalVelocity - 0.0004*loss);
+  horizontalVelocity = getMaxf(0.0, horizontalVelocity - 0.004*loss);
   // printf("v=%f, a=%f\n", velocity, accelaration);
+
   glutPostRedisplay() ;
 }
+
 
 void reshape(int w, int h)
 {
