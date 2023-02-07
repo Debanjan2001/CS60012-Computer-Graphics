@@ -76,10 +76,10 @@ void bresenham_circle(int r)
 }
 
 static GLfloat xTranslate = 0.0, yTranslate=300.0;
-static float horizontalVelocity = 1;
+static float horizontalVelocity = 2;
 static float velocity = 0.0;
-static float accelaration = 0.05;
-const float loss = 0.8;
+static float accelaration = 0.1;
+const float loss = 0.6;
 static int upwardMotion = 0;
 static int hitGround = 0;
 static float EPS = 1e-6;
@@ -136,10 +136,10 @@ void display(void)
   // Draw sample Axes for better visualization
   glColor3f(0.0, 0.0, 0.0) ;
   glBegin(GL_LINES);
-    glVertex2f(-5, -5);
-    glVertex2f(160, -5);
-    glVertex2f(-5, -5);
-    glVertex2f(-5, 80);
+    glVertex2f(-5, -20);
+    glVertex2f(900, -20);
+    glVertex2f(-5, -20);
+    glVertex2f(-5, 200);
   glEnd();
 
 
@@ -153,15 +153,15 @@ void display(void)
   
   // glutWireSphere(25, 20, 20);
   
-  if(yTranslate > 0 && yTranslate < 10000*EPS){
+  if(upwardMotion == 1 && yTranslate < 100*EPS && velocity > EPS){
     // printf("yes\n");
     // bresenham_circle(15);
-    DrawEllipse(xc, yc, 40, 20, 10);
+    DrawEllipse(xc, yc, 25, 16, 30);
   }else{
-    bresenham_circle(30);
+    bresenham_circle(20);
   }
 
-  // bresenham_circle(30);
+  // bresenham_circle(20);
 
   glPopMatrix() ;
   glutSwapBuffers();
@@ -173,6 +173,11 @@ void translateDisplay(void)
   // if(velocity < EPS && horizontalVelocity < EPS){
   //   return;
   // }
+
+
+  if(velocity == 0.0 && horizontalVelocity == 0.0){
+    return;
+  }
 
   xTranslate = xTranslate + horizontalVelocity ;
 
@@ -197,7 +202,7 @@ void translateDisplay(void)
     // }
   }
 
-  horizontalVelocity = getMaxf(0.0, horizontalVelocity - 0.004*loss);
+  horizontalVelocity = getMaxf(0.0, horizontalVelocity - 0.003*loss);
   // printf("v=%f, a=%f\n", velocity, accelaration);
 
   glutPostRedisplay() ;
@@ -212,7 +217,7 @@ void reshape(int w, int h)
   glLoadIdentity();
 
   // Get a Flat view
-  glOrtho(-100.0, 800.0, -100.0, 500.0, -50.0, 50.0);
+  glOrtho(-100.0, 1340.0, -100.0, 800.0, -50.0, 50.0);
 
   // Get a 3d View
   // glFrustum (-10.0, 50.0, -10.0, 50.0, 10, 100);
@@ -240,8 +245,8 @@ void mouse(int button, int state, int x, int y)
 int main(int argc, char** argv)
 {
   glutInit(&argc, argv) ;
-  glutInitDisplayMode(GLUT_DOUBLE) ;
-  glutInitWindowSize(900, 600);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB) ;
+  glutInitWindowSize(1440, 900);
   glutInitWindowPosition(100,100) ;
   glutCreateWindow("Trajectory of a bouncing ball") ;
   init() ;
