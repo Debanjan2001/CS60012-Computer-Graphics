@@ -1,5 +1,5 @@
 # Filename 
-- ball_trajectory.c
+- ball.c
 
 # How to Compile and run the file?
 

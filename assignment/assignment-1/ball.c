@@ -219,8 +219,8 @@ void display(void)
 
     // Draw a ground line
     for(int i=1;i<=3;i++){
-        glVertex2f(-200, -30-i);
-        glVertex2f(1500, -30-i);
+        glVertex2f(-200, -BALL_RADIUS-i);
+        glVertex2f(1500, -BALL_RADIUS-i);
     }
     
     glEnd();
