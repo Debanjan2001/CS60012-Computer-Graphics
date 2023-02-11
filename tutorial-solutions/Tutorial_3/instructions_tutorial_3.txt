@@ -1,0 +1,11 @@
+In this tutorial, we will see composite modeling transformations applied to hierarchical (part based) models. The purpose is to experiment with glPushMatrix and glPopMatrix functions to apply transformation in different parts of a model. We will design a very basic and simplest form of a robotic arm (approximated by wire cube) & apply different rotations to the shoulder and elbow parts. 
+
+- Use glutWireCube() to model shoulder and elbow parts separately. Apply proper scaling to the cube so that it looks like a long rectangular shaped arm part.
+
+- Apply proper transformations to place the shoulder and elbow parts in proper places. Carefully use glPushMatrix and glPopMatrix to obtain the desired transformation to each part (both locally & globally). Don't forget to use glutSwapBuffers() at the end of display function.
+
+- You may define the rotation angle for shoulder and elbow parts separately as global variables, and use these to perform rotation from the display callback function.
+
+- In the reshape callback function, you may use gluPerspective(). Choose appropriate parameters for proper display. 
+
+- Use the 's' & 'S' keys for rotation of shoulder part, and 'e' & 'E' keys for rotation of elbow part, in clockwise and counterclockwise directions respectively. You may use 5 degrees increment/decrement of rotation angle in each key press. 

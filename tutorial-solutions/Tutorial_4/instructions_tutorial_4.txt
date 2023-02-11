@@ -1,0 +1,11 @@
+In this tutorial we will deal with a colored cube and move it using different keys.
+
+- First, you have to draw a simple cube with each face being a different color. You can start drawing one face and then apply rotation to draw the other faces. Simply draw a colored square (or use GL_TRIANGLE_FAN) to draw the first face (say the front face). Then rotate it 90 degrees and apply a different color to get the right face.  Apply -90 degree rotation with a different color to get the top face, and so on. Make sure that you use glPushMatrix() and glPopMatrix() properly while applying transformation each time. 
+
+- Use GLUT_DOUBLE and glutSwapBuffers()
+
+- Now you have to use the following keys to perform the rotation: use the four arrow keys for rotation in x and y, F11 and F12 for rotation in z axis. Pressing F1 should restore the cube in it's home position.
+
+- Use glutSpecialFunc() to use the arrow keys for interaction. You can use GLUT_KEY_LEFT, GLUT_KEY_RIGHT, GLUT_KEY_F11, etc. You will need to call glutPostRedisplay() at the end of the function glutSpecialFunc().
+
+- You may use glOrtho(-1, 1, -1, 1, -1, 1) as projection matrix. Also, apply a small rotation to the initial position of the cube (to make it a bit tilted) so that it looks like a cube (and not like a 2D square).
