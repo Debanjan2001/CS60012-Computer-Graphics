@@ -1,0 +1,19 @@
+The purpose of this tutorial is to continue with the animation that we have been doing in last few labs. This time we will learn how to use glutTimerFunc(), which registers a timer callback to be triggered in a specified number of milliseconds. This can be used to create smooth animation. There are two tasks in this tutorial:
+
+--------------- 1 ---------------
+- use glutWireCone() to draw a wirecone in OpenGL in a window with blue background.
+- draw 3 coordinate axes (in different color) inside the wirecone (make sure that the axes are small enough to remain inside, and still visible) 
+- create an animation that rotates the wirecone along with the coordinate axes. You need to use the function glutTimerFunc() for this animation
+---------------------------------
+
+
+
+--------------- 2 ---------------
+- Now you will experiment with how to use the camera to create a "fly-by" animation, where the object looks like slowly vanishing while performing the animation. 
+- Draw a coordinate axis syem with each axis in different colour. Place 3 objects in convenient locations, say, a wiremesh cone (glutWireCone) at the origin, another wiremesh cone at (-400,-400,0), and a wiremesh torus (glutWireTorus) at (400,400,1).
+- Create an animation so that the camera moves in the path of a parametric circle, and slowly goes further away from the objects, and finally gets out of visible range (as shown in the demo)
+- use glutTimerFunc() for the animation, as you did in the last lab
+- You can use sinusoid and/or cosine in the gluLookAt() function to create a nice path of the parametric circle (but you can use anything else if you want)
+---------------------------------
+
+

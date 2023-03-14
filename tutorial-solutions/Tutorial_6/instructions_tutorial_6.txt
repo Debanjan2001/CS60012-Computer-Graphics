@@ -1,0 +1,12 @@
+In this tutorial, we will start learning and exprimenting with OpenGL lighting and shading features to create realistic objects. For your convenience, a demo code light.c has been provided that lights up a sphere and sets material properties. Notice the use of in-built OpenGL functions like glEnable(GL_LIGHTING) and glEnable(GL_LIGHT0) for enabling lighting, glLightfv() for defining a light source, glMaterialfv() for setting up material properties, and glShadeModel() for shading the object. Experiment by turning on/off some of these features and notice the difference on the rendered object. Make sure that you understand the use of these functions.
+
+Once you understand the use of different functions for lighting and material properties, the next task is to light a OpenGL teapot while it is animating as shown in the demo. Following are the tasks:
+
+- Draw a solid teapot using GLUT function glutSolidTeapot() and draw 3 coordinate axes inside it.
+- Animate the teapot using glutTimerFunc() and move the camera along a parametric path, same as you did in previous lab for the wirecone.
+- Define ambient, specular, and diffuse light source
+- Apply a smooth shading model (GL_SMOOTH)
+- Add color material - you can use glColorMaterial()
+- Set material property using glMaterialfv() - set material property value for both front face and back face, and all types of lights
+- Add shininess factor along with the material property - you can use glMateriali()
+- Finally enable Z-buffer on the object
