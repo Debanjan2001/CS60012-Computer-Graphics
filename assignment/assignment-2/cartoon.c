@@ -15,16 +15,23 @@
   #include <GL/glut.h>
 #endif
 
-#define WINDOW_X        1200.0
-#define WINDOW_Y        800.0 
-#define FAR             600.0
-#define NEAR           -600.0
+#define WINDOW_X            1200.0
+#define WINDOW_Y            800.0 
+#define FAR                 600.0
+#define NEAR                -600.0
 
-#define SUN_RADIUS      50.0
+#define SUN_RADIUS          50.0
 
-#define MSEC            50
+#define CAR_HEIGHT          100.0
+#define CAR_WHEEL_RADIUS    40.0
+#define WHEEL_RIM_RADIUS    33.0
+#define CAR_VELOCITY        3
 
-static int sun_rotation = 0;
+#define MSEC                30
+
+static int sun_rotation     = 0;
+static int car_translateX   = 0;
+static int wheel_rotation   = 0;
 
 
 // Initial parameters: Clear the screen, set shading...
@@ -69,7 +76,7 @@ void drawRoad(){
         glVertex3f(-WINDOW_X/2, -WINDOW_Y/5, -FAR/4);
     glEnd();
 
-    // The Road Markings
+    // The Road Markings/Divider
     glBegin(GL_POLYGON);
         // Road Color
         glColor3f(1.0, 1.0, 1.0);
@@ -87,31 +94,91 @@ void drawHouse(){
 
 void drawSun(){
     glPushMatrix();
-    glTranslatef(3*WINDOW_X/10, 3*WINDOW_Y/10, 0.0);
     glRotatef((GLfloat) sun_rotation, 0.0, 0.0, 1.0);
     // Sun Color
     glColor3f(1.0, 0.9, 0.0);
     
     glBegin(GL_POLYGON);
         for(double theta=0.0; theta < 360.0; theta+=0.1){
-            glVertex3f(SUN_RADIUS*cos(theta), SUN_RADIUS*sin(theta), -FAR/4);
+            glVertex3f(SUN_RADIUS*cos(theta), SUN_RADIUS*sin(theta), 0.0);
         }
     glEnd();
 
     glLineWidth(2.0);
-        for(double theta=0.0; theta < 360.0; theta += 30.0){
-            glRotatef(30.0, 0.0, 0.0, 1.0);
-            glBegin(GL_LINES);
-                glVertex3f(-2*SUN_RADIUS, 0.0, -FAR/4);
-                glVertex3f(2*SUN_RADIUS, 0.0, -FAR/4);
-            glEnd();
-        }
+    for(double theta=0.0; theta < 360.0; theta += 30.0){
+        glRotatef(30.0, 0.0, 0.0, 1.0);
+        glBegin(GL_LINES);
+            glVertex3f(-2*SUN_RADIUS, 0.0, 0.0);
+            glVertex3f(2*SUN_RADIUS, 0.0, 0.0);
+        glEnd();
+    }
     
     glPopMatrix();
     glFlush();
 }
 
+void drawCarWheel(){
+    glPushMatrix();
+    glRotatef((GLfloat) wheel_rotation, 0.0, 0.0, 1.0);
+    
+    glBegin(GL_POLYGON);
+        // Tire Color
+        glColor3f(0.0, 0.0, 0.0);
+        for(double theta=0.0; theta < 360.0; theta+=0.1){
+            glVertex3f(CAR_WHEEL_RADIUS*cos(theta), CAR_WHEEL_RADIUS*sin(theta), 0.0);
+        }
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        // Rim Color
+        glColor3f(0.38, 0.4, 0.43);
+        for(double theta=0.0; theta < 360.0; theta+=0.1){
+            glVertex3f(WHEEL_RIM_RADIUS*cos(theta), WHEEL_RIM_RADIUS*sin(theta), 0.0);
+        }
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        // Center Color
+        glColor3f(0.0, 0.0, 0.0);
+        for(double theta=0.0; theta < 360.0; theta+=0.1){
+            glVertex3f(10.0*cos(theta), 10.0*sin(theta), 0.0);
+        }
+    glEnd();
+
+    glLineWidth(1.5);
+    for(double theta=0.0; theta < 360.0; theta += 20.0){
+        glRotatef(20.0, 0.0, 0.0, 1.0);
+        glBegin(GL_LINES);
+            glVertex3f(-CAR_WHEEL_RADIUS, 0.0, 0.0);
+            glVertex3f(CAR_WHEEL_RADIUS, 0.0, 0.0);
+        glEnd();
+    }
+
+    glPopMatrix();
+    glFlush();
+}
+
 void drawCar(){
+    glPushMatrix();
+    glTranslatef(car_translateX, 0.0, 0.0);
+    
+    // Car Color
+    glColor3f(0.13, 0.1, 0.87);
+    glBegin(GL_POLYGON);
+        glVertex3f(-WINDOW_X/10, 0, 0.0);
+        glVertex3f(WINDOW_X/10, 0, 0.0);
+        glVertex3f(WINDOW_X/10, CAR_HEIGHT, 0.0);
+        glVertex3f(-WINDOW_X/10, CAR_HEIGHT, 0.0);
+    glEnd();
+
+    // Draw the Wheels 
+    glTranslatef(-60, 0.0, -50.0);
+    drawCarWheel();
+    glTranslatef(+120, 0.0, 0.0);
+    drawCarWheel();
+
+    glPopMatrix();
+    glFlush();
 }
 
 /*
@@ -133,11 +200,19 @@ void display(void)
     // Draw House
     drawHouse();
 
+    // Set Initial Position of Sun
+    glPushMatrix();
+    glTranslatef(3*WINDOW_X/10, 3*WINDOW_Y/10, -FAR/4);
     // Draw Sun
     drawSun();
+    glPopMatrix();
 
-    // Draw Car
+    // Set Initial Position of Car
+    glPushMatrix();
+    glTranslatef(-5*WINDOW_X/20, -15*WINDOW_Y/50, -FAR/4);
+    // Draw Car 
     drawCar();
+    glPopMatrix();
 
     glutSwapBuffers();
 }
@@ -160,7 +235,13 @@ void reshape(int w, int h)
 }
 
 void timer(int value){
-    sun_rotation = (sun_rotation + 1) % 360;
+    sun_rotation = (sun_rotation - 1) % 360;
+    car_translateX = (car_translateX + CAR_VELOCITY);
+    if(car_translateX > WINDOW_X){
+        car_translateX = -WINDOW_X/2 + 50;
+    }
+    wheel_rotation = (int)(wheel_rotation - (int)(36.0*CAR_VELOCITY*MSEC)/(20*3.14*CAR_WHEEL_RADIUS)) % 360;
+
     glutPostRedisplay();
     glutTimerFunc(MSEC, timer, 1);
 }
