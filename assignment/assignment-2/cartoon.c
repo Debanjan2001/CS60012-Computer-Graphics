@@ -15,12 +15,17 @@
   #include <GL/glut.h>
 #endif
 
-#define WINDOW_X       1024.0
-#define WINDOW_Y       768.0 
-#define FAR           600.0
-#define NEAR         -600.0
+#define WINDOW_X        1200.0
+#define WINDOW_Y        800.0 
+#define FAR             600.0
+#define NEAR           -600.0
 
-#define MSEC            10
+#define SUN_RADIUS      50.0
+
+#define MSEC            50
+
+static int sun_rotation = 0;
+
 
 // Initial parameters: Clear the screen, set shading...
 void init(void)
@@ -76,6 +81,39 @@ void drawRoad(){
     glFlush();
 }
 
+void drawHouse(){
+
+}
+
+void drawSun(){
+    glPushMatrix();
+    glTranslatef(3*WINDOW_X/10, 3*WINDOW_Y/10, 0.0);
+    glRotatef((GLfloat) sun_rotation, 0.0, 0.0, 1.0);
+    // Sun Color
+    glColor3f(1.0, 0.9, 0.0);
+    
+    glBegin(GL_POLYGON);
+        for(double theta=0.0; theta < 360.0; theta+=0.1){
+            glVertex3f(SUN_RADIUS*cos(theta), SUN_RADIUS*sin(theta), -FAR/4);
+        }
+    glEnd();
+
+    glLineWidth(2.0);
+        for(double theta=0.0; theta < 360.0; theta += 30.0){
+            glRotatef(30.0, 0.0, 0.0, 1.0);
+            glBegin(GL_LINES);
+                glVertex3f(-2*SUN_RADIUS, 0.0, -FAR/4);
+                glVertex3f(2*SUN_RADIUS, 0.0, -FAR/4);
+            glEnd();
+        }
+    
+    glPopMatrix();
+    glFlush();
+}
+
+void drawCar(){
+}
+
 /*
  * Purpose: Display function for rendering the ball
 */
@@ -91,6 +129,15 @@ void display(void)
 
     // Draw Road
     drawRoad();
+
+    // Draw House
+    drawHouse();
+
+    // Draw Sun
+    drawSun();
+
+    // Draw Car
+    drawCar();
 
     glutSwapBuffers();
 }
@@ -110,6 +157,12 @@ void reshape(int w, int h)
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+}
+
+void timer(int value){
+    sun_rotation = (sun_rotation + 1) % 360;
+    glutPostRedisplay();
+    glutTimerFunc(MSEC, timer, 1);
 }
 
 
@@ -136,6 +189,7 @@ int main(int argc, char** argv)
     // Setting a display function
     glutDisplayFunc(display) ;
     glutReshapeFunc(reshape) ;
+    glutTimerFunc(MSEC, timer, 1) ;
     
     // Calling the main loop
     glutMainLoop() ;
