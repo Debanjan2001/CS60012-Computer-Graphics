@@ -1,0 +1,5 @@
+This tutorial is an extension of the previous tutorial where we experimented with defining a light source, adding material properties, and lighting up a solid object. In this tutorial, we will experiment with the position of a light source around the object and see the effect of light and darkness. Following are the tasks for the lab:
+
+- Draw a solid torus, define a light source to light up the torus. Draw a small wire cube to represent the position of the light.
+- Now the goal is to rotate a light source around a torus with the help of the mouse button, as shown in the demo. Since the cube represents the light source, we will be able to see the light effect clearly by the cube movement.
+- Tips:  reset the light position after the modeling transformation is called.  This will place the light at a new position in world coordinates.

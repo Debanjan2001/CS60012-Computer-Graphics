@@ -1,0 +1,8 @@
+In this tutorial, you will experiment with fog and translucency effects in OpenGL. Following are the instructions:
+
+- Draw two solid cones and show the coordinate axes. Animate using glutTimerFunc() and move the camera along a parametric path, same as you did in previous labs.
+- Define ambient, specular, and diffuse light source, apply a smooth shading model, color, and material properties, similar to the previous labs.
+- Now apply foggy effect on the scene, as shown in the demo. 
+- Also, apply translucency effect on the original scene, as shown in the demo. 
+- You can use glFogf() and glFogfv() for specifying the fog parameters. You can find the function parameters here: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glFog.xml.
+- For color blending, you may use glBlendFunc(). The parameters can be found here: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glBlendFunc.xml
