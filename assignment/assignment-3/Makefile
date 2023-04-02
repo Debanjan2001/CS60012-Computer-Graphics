@@ -1,6 +1,6 @@
 run: compile
 	./room.out
 compile:
-	gcc room.c -o room.out -lglut -lGLU -lGL -lm
+	g++ room.cpp -o room.out -lglut -lGLU -lGL
 clean:
 	rm room.out
