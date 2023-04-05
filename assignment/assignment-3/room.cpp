@@ -38,7 +38,7 @@ GLfloat const greenColor[] = {0.0, 1.0, 0.0};
 GLfloat const blueColor[] = {0.0, 0.0, 1.0};
 GLfloat const whiteColor[] = {1.0, 1.0, 1.0};
 GLfloat const blackColor[] = {0.0, 0.0, 0.0};
-GLfloat const noAmbientColor[] = {0.05, 0.05, 0.05, 0.05};
+GLfloat const ambientColor[] = {0.2, 0.2, 0.2, 0.2};
 
 // Define Material Properties for teapot and light sources
 GLfloat teapotSpecular[] = {0.1, 0.1, 0.1, 1.0};
@@ -47,7 +47,7 @@ GLfloat teapotShininess[] = {10.0};
 // Viewpoint White Light 
 GLfloat light0_position[] = {0.0, 0.0, -2*NEAR, 1.0};
 // GLfloat light0_ambient[] = {0.4, 0.4, 0.4, 1.4};
-GLfloat light0_diffuse[] = {0.7, 0.7, 0.7, 1.0};
+GLfloat light0_diffuse[] = {0.8, 0.8, 0.8, 1.0};
 
 
 // Red Light Source
@@ -69,7 +69,7 @@ static bool light3_on = 1;
 static bool ambient_light_on = 1;
 static bool viewpoint_light_on = 1;
 
-GLfloat ambientLight[] = {0.3, 0.3, 0.3, 1.0};
+GLfloat ambientLight[] = {0.2, 0.2, 0.2, 1.0};
 GLfloat ambient[] = {1,1, 1};
 GLfloat diffuseLight[] = {0.7, 0.7, 0.7, 1.0};
 GLfloat specularLight[] = {1.0, 1.0, 1.0, 1.0};
@@ -91,24 +91,30 @@ void init(){
 
 void drawTeapot(){
   glPushMatrix();
-    if(ambient_light_on){
-      glColor3fv(grayColor);
-    }else{
-      glColor4fv(noAmbientColor);
-    }
+    glColor3fv(grayColor);
     glutSolidTeapot(TEAPOT_SIZE);
   glPopMatrix();
   glFlush();
 }
 
 // Define function to draw a colored sphere for the light sources
-void drawLightSphere(GLfloat* position, GLfloat* diffuse) {
+void drawLightSphere(GLfloat* position, GLfloat* diffuse, int lightColor) {
     glPushMatrix();
     glTranslatef(position[0], position[1], position[2]);
-    if(ambient_light_on){
-      glColor3fv(diffuse);
+    // if(ambient_light_on){
+    //   glColor3fv(diffuse);
+    // }else{
+    //   glColor4fv(noAmbientColor);
+    // }
+    
+    if(lightColor == 1 && light1_on){
+      glColor3fv(redColor);
+    }else if(lightColor == 2 && light2_on){
+      glColor3fv(greenColor);
+    }else if(lightColor == 3 && light3_on){
+      glColor3fv(blueColor);
     }else{
-      glColor4fv(noAmbientColor);
+      glColor3fv(grayColor);
     }
     glutSolidSphere(SPHERE_RADIUS, 50, 50);
     glPopMatrix();
@@ -119,6 +125,10 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glPushMatrix();
+
+    // Soft white ambient light
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+
     glRotatef(rotateX, 1.0, 0.0, 0.0);
     glRotatef(rotateY, 0.0, 1.0, 0.0);
     
@@ -140,9 +150,9 @@ void display() {
     glLightfv(GL_LIGHT3, GL_POSITION, light3_position);
     glLightfv(GL_LIGHT3, GL_DIFFUSE, light3_diffuse);
 
-    drawLightSphere(light1_position, light1_diffuse);
-    drawLightSphere(light2_position, light2_diffuse);
-    drawLightSphere(light3_position, light3_diffuse);
+    drawLightSphere(light1_position, light1_diffuse, 1);
+    drawLightSphere(light2_position, light2_diffuse, 2);
+    drawLightSphere(light3_position, light3_diffuse, 3);
     glPopMatrix();
 
     glPopMatrix();
@@ -162,9 +172,8 @@ void reshape(int w, int h){
 // Define function to set up the lights
 void setupLights() {
 
-
-  // Soft white ambient light
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+  // // Soft white ambient light
+  // glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
 
   glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE) ;
   glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE) ;  /* Front @ back faces */
@@ -238,9 +247,9 @@ void handleKeyboard(unsigned char key, int x, int y) {
         case 'l':
         case 'L':
             if(ambient_light_on){
-              glDisable(GL_LIGHTING);
+              setColor(ambientLight, blackColor);
             }else{
-              glEnable(GL_LIGHTING);
+              setColor(ambientLight, ambientColor);
             }
             toggleSwitch(ambient_light_on);
             break;
